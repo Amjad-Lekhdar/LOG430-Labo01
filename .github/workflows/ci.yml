@@ -17,9 +17,13 @@ jobs:
         run: |
           echo "MYSQL_HOST=mysql" >> .env
           echo "MONGODB_HOST=mongo" >> .env
+          echo "MONGODB_PORT=27017" >> .env
           echo "MYSQL_DB_NAME=labo01_db" >> .env
           echo "DB_USERNAME=labo01" >> .env
           echo "DB_PASSWORD=labo01" >> .env
+          echo "MONGODB_DB_NAME=labo01_db" >> .env
+          echo "MONGODB_USERNAME=labo01" >> .env
+          echo "MONGODB_PASSWORD=labo01" >> .env
 
       - name: Démarrer le conteneur
         run: |
@@ -40,6 +44,19 @@ jobs:
             fi
           done
           sleep 5
+
+      - name: Attendre MongoDB
+        run: |
+          timeout=60
+          until docker exec mongo mongosh --quiet -u labo01 -p labo01 --authenticationDatabase admin --eval "db.adminCommand('ping').ok" | grep 1; do
+            echo "Waiting for MongoDB..."
+            sleep 3
+            timeout=$((timeout - 3))
+            if [ $timeout -le 0 ]; then
+              echo "MongoDB failed to start"
+              exit 1
+            fi
+          done
 
       - name: Éxécuter les tests
         run: docker exec store_manager_cli pytest ./src/tests

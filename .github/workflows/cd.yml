@@ -21,9 +21,13 @@ jobs:
         run: |
           echo "MYSQL_HOST=mysql" >> .env
           echo "MONGODB_HOST=mongo" >> .env
+          echo "MONGODB_PORT=27017" >> .env
           echo "MYSQL_DB_NAME=labo01_db" >> .env
           echo "DB_USERNAME=labo01" >> .env
           echo "DB_PASSWORD=labo01" >> .env
+          echo "MONGODB_DB_NAME=labo01_db" >> .env
+          echo "MONGODB_USERNAME=labo01" >> .env
+          echo "MONGODB_PASSWORD=labo01" >> .env
 
       - name: Préparer le nom de l'image
         run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
